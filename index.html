@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<link rel="icon" href="Assets/CertifiedSky.png" type="image/x-icon">
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CertifiedSky - Minecraft Server</title>
+    <title>CertifiedSky</title>
     <style>
         /* Global Styles */
         * {
@@ -20,7 +19,7 @@
             overflow-x: hidden;
         }
 
-        /* Animation Background */
+        /* Enhanced Background Animation */
         .space-background {
             position: fixed;
             top: 0;
@@ -28,45 +27,144 @@
             width: 100%;
             height: 100%;
             z-index: -1;
-            background: linear-gradient(45deg, #121212, #1a1a1a, #121212);
+            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
             overflow: hidden;
+        }
+
+        /* Stars Animation */
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
         }
 
         .star {
             position: absolute;
+            border-radius: 50%;
             background-color: #ffffff;
-            border-radius: 50%;
-            animation: twinkle 4s infinite;
-        }
-
-        .shooting-star {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: linear-gradient(90deg, rgba(255,204,0,0), rgba(255,204,0,1) 50%, rgba(255,204,0,0));
-            border-radius: 50%;
-            animation: shoot 6s linear infinite;
-            opacity: 0;
+            animation: twinkle var(--duration) infinite ease-in-out;
+            opacity: var(--opacity);
         }
 
         @keyframes twinkle {
-            0%, 100% { opacity: 0.3; transform: scale(0.8); }
+            0%, 100% { opacity: var(--opacity); transform: scale(0.8); }
             50% { opacity: 1; transform: scale(1.2); }
         }
 
-        @keyframes shoot {
+        /* Nebula Effect */
+        .nebula {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 30% 20%, rgba(128, 0, 128, 0.15) 0%, rgba(128, 0, 128, 0) 25%),
+                radial-gradient(circle at 70% 60%, rgba(0, 128, 255, 0.15) 0%, rgba(0, 128, 255, 0) 25%),
+                radial-gradient(circle at 50% 90%, rgba(255, 204, 0, 0.15) 0%, rgba(255, 204, 0, 0) 25%);
+            filter: blur(8px);
+            animation: nebulaFloat 120s infinite alternate ease-in-out;
+        }
+
+        @keyframes nebulaFloat {
+            0% { transform: scale(1) rotate(0deg); }
+            100% { transform: scale(1.2) rotate(5deg); }
+        }
+
+        /* Shooting Stars */
+        .shooting-star {
+            position: absolute;
+            width: var(--length);
+            height: 2px;
+            background: linear-gradient(90deg, rgba(255,255,255,0), #ffcc00 20%, #ffffff);
+            border-radius: 50%;
+            animation: shooting-star var(--duration) linear infinite;
+            opacity: 0;
+            transform-origin: right;
+            z-index: 1;
+        }
+
+        @keyframes shooting-star {
             0% { 
-                transform: translate(0, 0) rotate(-45deg) scale(1);
+                transform: translateX(0) translateY(0) rotate(var(--angle));
                 opacity: 0;
             }
-            10% { opacity: 1; }
-            70% { opacity: 1; }
+            5% { opacity: 1; }
+            20% { opacity: 1; }
+            30% { 
+                transform: translateX(calc(var(--travel-x) * -1)) translateY(var(--travel-y)) rotate(var(--angle));
+                opacity: 0;
+            }
             100% { 
-                transform: translate(300px, 300px) rotate(-45deg) scale(0.1);
+                transform: translateX(calc(var(--travel-x) * -1)) translateY(var(--travel-y)) rotate(var(--angle));
                 opacity: 0;
             }
         }
 
+        /* Glowing Orbs */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            box-shadow: 0 0 60px 30px var(--color);
+            background-color: rgba(255, 255, 255, 0.1);
+            animation: orbFloat var(--duration) infinite alternate ease-in-out;
+            opacity: 0.4;
+            filter: blur(8px);
+        }
+
+        @keyframes orbFloat {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(var(--move-x), var(--move-y)) scale(1.2); }
+        }
+
+        /* Magic Circle Animation */
+        .magic-circle {
+            position: absolute;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 204, 0, 0.3);
+            opacity: 0.5;
+            animation: rotate var(--duration) linear infinite;
+        }
+
+        .magic-circle:before, .magic-circle:after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 204, 0, 0.2);
+            width: calc(100% - 20px);
+            height: calc(100% - 20px);
+            top: 10px;
+            left: 10px;
+        }
+
+        .magic-circle:after {
+            width: calc(100% - 40px);
+            height: calc(100% - 40px);
+            top: 20px;
+            left: 20px;
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .magic-circle .rune {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: rgba(255, 204, 0, 0.5);
+            border-radius: 50%;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Parallax Effect */
+        .parallax-layer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.1s ease-out;
+        }
+
+        /* Rest of your existing CSS */
         /* Navigation */
         nav {
             display: flex;
@@ -126,6 +224,21 @@
             width: 100%;
         }
 
+        /* Copy Message */
+        .copy-message {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(255, 204, 0, 0.9);
+            color: #121212;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+        }
+
         /* Hero Section */
         .hero {
             height: 100vh;
@@ -135,6 +248,8 @@
             align-items: center;
             text-align: center;
             padding: 0 1rem;
+            position: relative;
+            z-index: 2;
         }
 
         .hero h1 {
@@ -144,6 +259,7 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             animation: fadeInUp 1s ease;
+            text-shadow: 0 0 20px rgba(255, 204, 0, 0.3);
         }
 
         .hero p {
@@ -179,6 +295,33 @@
             box-shadow: 0 0 15px rgba(255, 204, 0, 0.3);
             animation: fadeInUp 1s ease 0.4s;
             animation-fill-mode: both;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ip-box:before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                rgba(255, 204, 0, 0) 0%,
+                rgba(255, 204, 0, 0) 40%,
+                rgba(255, 204, 0, 0.3) 50%,
+                rgba(255, 204, 0, 0) 60%,
+                rgba(255, 204, 0, 0) 100%
+            );
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+            z-index: 1;
+        }
+
+        @keyframes shine {
+            0% { left: -150%; }
+            100% { left: 150%; }
         }
 
         .ip-box:hover {
@@ -192,20 +335,8 @@
             font-weight: 700;
             margin: 0;
             color: #ffcc00;
-        }
-
-        .copy-message {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: rgba(255, 204, 0, 0.9);
-            color: #121212;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: 1000;
+            position: relative;
+            z-index: 2;
         }
 
         /* Stats Section */
@@ -217,6 +348,8 @@
             margin-bottom: 4rem;
             animation: fadeInUp 1s ease 0.6s;
             animation-fill-mode: both;
+            position: relative;
+            z-index: 2;
         }
 
         .stat-card {
@@ -227,12 +360,34 @@
             text-align: center;
             transition: all 0.3s ease;
             border: 1px solid #2a2a2a;
+            position: relative;
+            overflow: hidden;
         }
 
         .stat-card:hover {
             transform: translateY(-10px);
             background-color: rgba(40, 40, 40, 0.8);
             border-color: #ffcc00;
+        }
+
+        .stat-card:after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(
+                circle,
+                rgba(255, 204, 0, 0.1) 0%,
+                rgba(255, 204, 0, 0) 70%
+            );
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .stat-card:hover:after {
+            opacity: 1;
         }
 
         .stat-icon {
@@ -253,288 +408,7 @@
             color: #aaaaaa;
         }
 
-        /* Sections */
-        section {
-            padding: 6rem 5%;
-        }
-
-        .section-title {
-            font-size: 2.5rem;
-            margin-bottom: 3rem;
-            text-align: center;
-            color: #ffcc00;
-            position: relative;
-        }
-
-        .section-title:after {
-            content: '';
-            position: absolute;
-            width: 100px;
-            height: 3px;
-            background-color: #ffcc00;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        /* Shop Section */
-        .shop-categories {
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-            margin-bottom: 3rem;
-            flex-wrap: wrap;
-        }
-
-        .category-btn {
-            background-color: transparent;
-            border: 2px solid #ffcc00;
-            color: #ffcc00;
-            padding: 0.7rem 1.5rem;
-            border-radius: 50px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .category-btn:hover, .category-btn.active {
-            background-color: #ffcc00;
-            color: #121212;
-        }
-
-        .shop-items {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .shop-item {
-            background-color: rgba(30, 30, 30, 0.8);
-            border-radius: 10px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            position: relative;
-            border: 1px solid #2a2a2a;
-        }
-
-        .shop-item:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-            border-color: #ffcc00;
-        }
-
-        .shop-item-image {
-            width: 100%;
-            height: 200px;
-            background-size: cover;
-            background-position: center;
-            position: relative;
-        }
-
-        .shop-item-category {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            background-color: #ffcc00;
-            color: #121212;
-            padding: 0.3rem 1rem;
-            border-radius: 50px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        .shop-item-content {
-            padding: 1.5rem;
-        }
-
-        .shop-item-title {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-            color: #ffffff;
-        }
-
-        .shop-item-price {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #ffcc00;
-            margin-bottom: 1rem;
-        }
-
-        .shop-item-description {
-            font-size: 1rem;
-            color: #aaaaaa;
-            margin-bottom: 1.5rem;
-            line-height: 1.6;
-        }
-
-        .buy-btn {
-            background-color: #ffcc00;
-            color: #121212;
-            padding: 0.7rem 1.5rem;
-            border: none;
-            border-radius: 50px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-block;
-            text-decoration: none;
-        }
-
-        .buy-btn:hover {
-            background-color: #e6b800;
-            transform: scale(1.05);
-        }
-
-        /* Features Section */
-        .features {
-            background-color: rgba(25, 25, 25, 0.8);
-            padding: 6rem 5%;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 3rem;
-        }
-
-        .feature-card {
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .feature-card:hover .feature-icon {
-            transform: translateY(-10px);
-            color: #ffcc00;
-        }
-
-        .feature-icon {
-            font-size: 3rem;
-            margin-bottom: 1.5rem;
-            color: #ffffff;
-            transition: all 0.3s ease;
-        }
-
-        .feature-title {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: #ffcc00;
-        }
-
-        .feature-description {
-            font-size: 1rem;
-            color: #aaaaaa;
-            line-height: 1.6;
-        }
-
-        /* Footer */
-        footer {
-            background-color: #0a0a0a;
-            padding: 4rem 5% 2rem;
-            border-top: 2px solid #ffcc00;
-        }
-
-        .footer-content {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 3rem;
-            margin-bottom: 3rem;
-        }
-
-        .footer-column {
-            flex: 1;
-            min-width: 250px;
-        }
-
-        .footer-logo {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #ffcc00;
-            margin-bottom: 1rem;
-            display: block;
-        }
-
-        .footer-description {
-            font-size: 1rem;
-            color: #aaaaaa;
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
-        }
-
-        .social-links {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .social-link {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            background-color: #1a1a1a;
-            border-radius: 50%;
-            color: #ffcc00;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            font-size: 1.2rem;
-        }
-
-        .social-link:hover {
-            background-color: #ffcc00;
-            color: #121212;
-            transform: translateY(-5px);
-        }
-
-        .footer-title {
-            font-size: 1.3rem;
-            color: #ffffff;
-            margin-bottom: 1.5rem;
-            position: relative;
-            padding-bottom: 0.5rem;
-        }
-
-        .footer-title:after {
-            content: '';
-            position: absolute;
-            width: 50px;
-            height: 2px;
-            background-color: #ffcc00;
-            bottom: 0;
-            left: 0;
-        }
-
-        .footer-links {
-            list-style: none;
-        }
-
-        .footer-link {
-            margin-bottom: 0.8rem;
-        }
-
-        .footer-link a {
-            color: #aaaaaa;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            display: inline-block;
-        }
-
-        .footer-link a:hover {
-            color: #ffcc00;
-            transform: translateX(5px);
-        }
-
-        .copyright {
-            text-align: center;
-            padding-top: 2rem;
-            border-top: 1px solid #1a1a1a;
-            color: #aaaaaa;
-            font-size: 0.9rem;
-        }
-
-        /* Responsive */
+        /* Responsive Styles */
         @media (max-width: 768px) {
             .hero h1 {
                 font-size: 3rem;
@@ -547,23 +421,30 @@
             .nav-links {
                 display: none;
             }
-
-            .section-title {
-                font-size: 2rem;
-            }
-
-            .footer-content {
-                flex-direction: column;
-                gap: 2rem;
-            }
         }
     </style>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Space Background Animation -->
-    <div class="space-background" id="space-background"></div>
+    <!-- Enhanced Space Background Animation -->
+    <div class="space-background" id="space-background">
+        <div class="parallax-layer" data-depth="0.1">
+            <div class="nebula"></div>
+        </div>
+        <div class="parallax-layer" data-depth="0.2" id="stars-container">
+            <!-- Stars will be added via JavaScript -->
+        </div>
+        <div class="parallax-layer" data-depth="0.3" id="shooting-stars-container">
+            <!-- Shooting stars will be added via JavaScript -->
+        </div>
+        <div class="parallax-layer" data-depth="0.4" id="orbs-container">
+            <!-- Glowing orbs will be added via JavaScript -->
+        </div>
+        <div class="parallax-layer" data-depth="0.5" id="magic-circles-container">
+            <!-- Magic circles will be added via JavaScript -->
+        </div>
+    </div>
 
     <!-- Copy Message -->
     <div class="copy-message" id="copy-message">Server IP copied to clipboard!</div>
@@ -615,302 +496,198 @@
         </div>
     </section>
 
-    <!-- Shop Section -->
-    <section id="shop">
-        <h2 class="section-title">Shop</h2>
-        
-        <div class="shop-categories">
-            <button class="category-btn active" data-category="all">All</button>
-            <button class="category-btn" data-category="ranks">Ranks</button>
-            <button class="category-btn" data-category="crates">Crate Keys</button>
-            <button class="category-btn" data-category="packs">Start Packs</button>
-            <button class="category-btn" data-category="tokens">Tokens</button>
-        </div>
-        
-        <div class="shop-items">
-            <!-- Ranks -->
-            <div class="shop-item" data-category="ranks">
-                <div class="shop-item-image" style="background-image: url('./Assets/CertifiedSky.png')">
-                    <div class="shop-item-category">Rank</div>
-                </div>
-                <div class="shop-item-content">
-                    <h3 class="shop-item-title">Solar Rank</h3>
-                    <div class="shop-item-price">$5.99</div>
-                    <p class="shop-item-description">Unlock special commands, 5 homes, colored chat, and access to exclusive items with our Astral Rank.</p>
-                    <a href="#" class="buy-btn">Purchase</a>
-                </div>
-            </div>
-            
-            <div class="shop-item" data-category="ranks">
-                <div class="shop-item-image" style="background-image: url('./Assets/CertifiedSky.png')">
-                    <div class="shop-item-category">Rank</div>
-                </div>
-                <div class="shop-item-content">
-                    <h3 class="shop-item-title">Nebula Rank</h3>
-                    <div class="shop-item-price">$10.99</div>
-                    <p class="shop-item-description">Enjoy 10 homes, custom nick colors, fly command, and priority queue access with our Nebula Rank.</p>
-                    <a href="#" class="buy-btn">Purchase</a>
-                </div>
-            </div>
-            
-            <div class="shop-item" data-category="ranks">
-                <div class="shop-item-image" style="background-image: url('./Assets/CertifiedSky.png')">
-                    <div class="shop-item-category">Rank</div>
-                </div>
-                <div class="shop-item-content">
-                    <h3 class="shop-item-title">Celestial Rank</h3>
-                    <div class="shop-item-price">$20.99</div>
-                    <p class="shop-item-description">Our premium rank with unlimited homes, custom prefixes, all commands, and exclusive perks only for Celestial members.</p>
-                    <a href="#" class="buy-btn">Purchase</a>
-                </div>
-            </div>
-
-            <div class="shop-item" data-category="ranks">
-                <div class="shop-item-image" style="background-image: url('./Assets/CertifiedSky.png')">
-                    <div class="shop-item-category">Rank</div>
-                </div>
-                <div class="shop-item-content">
-                    <h3 class="shop-item-title">Overlord Rank</h3>
-                    <div class="shop-item-price">$30.99</div>
-                    <p class="shop-item-description">Our premium rank with unlimited homes, custom prefixes, all commands, and exclusive perks only for Celestial members.</p>
-                    <a href="#" class="buy-btn">Purchase</a>
-                </div>
-            </div>
-            
-            <!-- Crate Keys -->
-            <div class="shop-item" data-category="crates">
-                <div class="shop-item-image" style="background-image: url('./Assets/CertifiedSky.png')">
-                    <div class="shop-item-category">Crate Key</div>
-                </div>
-                <div class="shop-item-content">
-                    <h3 class="shop-item-title">x10 Uncommon Crate Key</h3>
-                    <div class="shop-item-price">$0.99</div>
-                    <p class="shop-item-description">Unlock rare items, special gear, and unique cosmetics with our Cosmic Crate Key.</p>
-                    <a href="#" class="buy-btn">Purchase</a>
-                </div>
-            </div>
-
-            <div class="shop-item" data-category="crates">
-                <div class="shop-item-image" style="background-image: url('./Assets/CertifiedSky.png')">
-                    <div class="shop-item-category">Crate Key</div>
-                </div>
-                <div class="shop-item-content">
-                    <h3 class="shop-item-title">x10 Rare Crate Key</h3>
-                    <div class="shop-item-price">$1.99</div>
-                    <p class="shop-item-description">Unlock rare items, special gear, and unique cosmetics with our Cosmic Crate Key.</p>
-                    <a href="#" class="buy-btn">Purchase</a>
-                </div>
-            </div>
-            
-            <div class="shop-item" data-category="crates">
-                <div class="shop-item-image" style="background-image: url('./Assets/CertifiedSky.png')">
-                    <div class="shop-item-category">Crate Key</div>
-                </div>
-                <div class="shop-item-content">
-                    <h3 class="shop-item-title">x10 Epic Crate Key</h3>
-                    <div class="shop-item-price">$2.99</div>
-                    <p class="shop-item-description">Our premium crate key with legendary items, super rare drops, and exclusive rewards.</p>
-                    <a href="#" class="buy-btn">Purchase</a>
-                </div>
-            </div>
-
-            <div class="shop-item" data-category="crates">
-                <div class="shop-item-image" style="background-image: url('./Assets/CertifiedSky.png')">
-                    <div class="shop-item-category">Crate Key</div>
-                </div>
-                <div class="shop-item-content">
-                    <h3 class="shop-item-title">x10 Mega Crate Key</h3>
-                    <div class="shop-item-price">$4.99</div>
-                    <p class="shop-item-description">Unlock rare items, special gear, and unique cosmetics with our Cosmic Crate Key.</p>
-                    <a href="#" class="buy-btn">Purchase</a>
-                </div>
-            </div>
-            
-            <!-- Start Packs -->
-            <div class="shop-item" data-category="packs">
-                <div class="shop-item-image" style="background-image: url('./Assets/CertifiedSky.png')">
-                    <div class="shop-item-category">Starter Pack</div>
-                </div>
-                <div class="shop-item-content">
-                    <h3 class="shop-item-title">Novice Pack</h3>
-                    <div class="shop-item-price">$7.99</div>
-                    <p class="shop-item-description">Perfect for beginners! Includes iron tools, basic armor, 5,000 in-game currency, and 3 Cosmic Crate Keys.</p>
-                    <a href="#" class="buy-btn">Purchase</a>
-                </div>
-            </div>
-            
-            <div class="shop-item" data-category="packs">
-                <div class="shop-item-image" style="background-image: url('./Assets/CertifiedSky.png')">
-                    <div class="shop-item-category">Starter Pack</div>
-                </div>
-                <div class="shop-item-content">
-                    <h3 class="shop-item-title">Elite Pack</h3>
-                    <div class="shop-item-price">$14.99</div>
-                    <p class="shop-item-description">Skip the grind! Includes diamond tools, enchanted armor, 20,000 in-game currency, and 5 Galactic Crate Keys.</p>
-                    <a href="#" class="buy-btn">Purchase</a>
-                </div>
-            </div>
-            
-            <!-- Tokens -->
-            <div class="shop-item" data-category="tokens">
-                <div class="shop-item-image" style="background-image: url('./Assets/CertifiedSky.png')">
-                    <div class="shop-item-category">Tokens</div>
-                </div>
-                <div class="shop-item-content">
-                    <h3 class="shop-item-title">500 Tokens</h3>
-                    <div class="shop-item-price">$4.99</div>
-                    <p class="shop-item-description">Boost your gameplay with 500 tokens to spend on special items, perks, and boosts.</p>
-                    <a href="#" class="buy-btn">Purchase</a>
-                </div>
-            </div>
-            
-            <div class="shop-item" data-category="tokens">
-                <div class="shop-item-image" style="background-image: url('./Assets/CertifiedSky.png')">
-                    <div class="shop-item-category">Tokens</div>
-                </div>
-                <div class="shop-item-content">
-                    <h3 class="shop-item-title">1,500 Tokens</h3>
-                    <div class="shop-item-price">$12.99</div>
-                    <p class="shop-item-description">Best value! Get 1,500 tokens with a 25% bonus to spend on anything in our token shop.</p>
-                    <a href="#" class="buy-btn">Purchase</a>
-                </div>
-            </div>
-            
-            <div class="shop-item" data-category="tokens">
-                <div class="shop-item-image" style="background-image: url('./Assets/CertifiedSky.png')">
-                    <div class="shop-item-category">Tokens</div>
-                </div>
-                <div class="shop-item-content">
-                    <h3 class="shop-item-title">3,000 Tokens</h3>
-                    <div class="shop-item-price">$24.99</div>
-                    <p class="shop-item-description">Ultimate value! Get 3,000 tokens with a 40% bonus and unlock exclusive token-only cosmetics.</p>
-                    <a href="#" class="buy-btn">Purchase</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Features Section -->
-    <section id="features" class="features">
-        <h2 class="section-title">Our Features</h2>
-        
-        
-            
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-gem"></i>
-                </div>
-                <h3 class="feature-title">Economy System</h3>
-                <p class="feature-description">Build your wealth through our advanced economy system with player shops, auctions, and markets.</p>
-            </div>
-        
-            
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-trophy"></i>
-                </div>
-                <h3 class="feature-title">Regular Events</h3>
-                <p class="feature-description">Participate in weekly events with awesome rewards, from PvP tournaments to building competitions.</p>
-            </div>
-            
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-bolt"></i>
-                </div>
-                <h3 class="feature-title">Custom Enchantments</h3>
-                <p class="feature-description">Discover and utilize over 50 custom enchantments that add new abilities to your tools and weapons.</p>
-            </div>
-            
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-shield-alt"></i>
-                </div>
-                <h3 class="feature-title">Anti-Cheat Protection</h3>
-                <p class="feature-description">Play with confidence knowing our server is protected by advanced anti-cheat systems.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-column">
-                <a href="#" class="footer-logo">CertifiedSky</a>
-                <p class="footer-description">Experience the ultimate Minecraft server with custom features, amazing community, and constant updates.</p>
-                <div class="social-links">
-                    <a href="https://discord.gg/T8VWymreVS" class="social-link"><i class="fab fa-discord"></i></a>
-                    <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
-                    <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
-                </div>
-            </div>
-            
-            <div class="footer-column">
-                <h3 class="footer-title">Quick Links</h3>
-                <ul class="footer-links">
-                    <li class="footer-link"><a href="#">Home</a></li>
-                    <li class="footer-link"><a href="#shop">Shop</a></li>
-                    <li class="footer-link"><a href="#features">Features</a></li>
-                    <li class="footer-link"><a href="#">Discord</a></li>
-                </ul>
-            </div>
-            
-            <div class="footer-column">
-                <h3 class="footer-title">Support</h3>
-                <ul class="footer-links">
-                    <li class="footer-link"><a href="#">FAQ</a></li>
-                    <li class="footer-link"><a href="#">Rules</a></li>
-                    <li class="footer-link"><a href="#">Report Issues</a></li>
-                    <li class="footer-link"><a href="#">Contact Staff</a></li>
-                </ul>
-            </div>
-            
-            <div class="footer-column">
-                <h3 class="footer-title">Legal</h3>
-                <ul class="footer-links">
-                    <li class="footer-link"><a href="#">Terms of Service</a></li>
-                    <li class="footer-link"><a href="#">Privacy Policy</a></li>
-                    <li class="footer-link"><a href="#">Refund Policy</a></li>
-                </ul>
-            </div>
-        </div>
-        
-        <div class="copyright">
-            <p>&copy; 2025 CertifiedSky. All rights reserved. Not affiliated with Mojang AB.</p>
-        </div>
-    </footer>
-
     <!-- Scripts -->
     <script>
-        // Create stars and shooting stars for background animation
         document.addEventListener('DOMContentLoaded', function() {
+            // Get containers
+            const starsContainer = document.getElementById('stars-container');
+            const shootingStarsContainer = document.getElementById('shooting-stars-container');
+            const orbsContainer = document.getElementById('orbs-container');
+            const magicCirclesContainer = document.getElementById('magic-circles-container');
             const spaceBackground = document.getElementById('space-background');
+            const parallaxLayers = document.querySelectorAll('.parallax-layer');
             
             // Create stars
-            for (let i = 0; i < 150; i++) {
+            for (let i = 0; i < 250; i++) {
                 const star = document.createElement('div');
                 star.className = 'star';
-                star.style.width = `${Math.random() * 3 + 1}px`;
-                star.style.height = star.style.width;
+                
+                // Random size between 1px and 3px
+                const size = Math.random() * 2 + 1;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                
+                // Random position
                 star.style.left = `${Math.random() * 100}%`;
                 star.style.top = `${Math.random() * 100}%`;
-                star.style.animationDelay = `${Math.random() * 4}s`;
-                spaceBackground.appendChild(star);
+                
+                // Random animation duration between 2s and 6s
+                const duration = Math.random() * 4 + 2;
+                star.style.setProperty('--duration', `${duration}s`);
+                
+                // Random initial opacity between 0.2 and 0.7
+                const opacity = Math.random() * 0.5 + 0.2;
+                star.style.setProperty('--opacity', opacity);
+                
+                // Random animation delay
+                star.style.animationDelay = `${Math.random() * 5}s`;
+                
+                starsContainer.appendChild(star);
             }
             
             // Create shooting stars
-            for (let i = 0; i < 15; i++) {
+            function createShootingStar() {
                 const shootingStar = document.createElement('div');
                 shootingStar.className = 'shooting-star';
-                shootingStar.style.left = `${Math.random() * 80}%`;
-                shootingStar.style.top = `${Math.random() * 80}%`;
-                shootingStar.style.animationDelay = `${Math.random() * 15}s`;
-                shootingStar.style.width = `${Math.random() * 40 + 60}px`;
-                shootingStar.style.filter = `blur(${Math.random() * 2}px)`;
-                shootingStar.style.transform = `rotate(${Math.random() * 360}deg)`;
-                shootingStar.style.background = 'linear-gradient(90deg, rgba(255,204,0,0), rgba(255,204,0,1) 50%, rgba(255,204,0,0))';
-                spaceBackground.appendChild(shootingStar);
+                
+                // Random position at the edges of the screen
+                const side = Math.floor(Math.random() * 4); // 0: top, 1: right, 2: bottom, 3: left
+                let posX, posY;
+                
+                switch(side) {
+                    case 0: // top
+                        posX = Math.random() * 100;
+                        posY = 0;
+                        break;
+                    case 1: // right
+                        posX = 100;
+                        posY = Math.random() * 100;
+                        break;
+                    case 2: // bottom
+                        posX = Math.random() * 100;
+                        posY = 100;
+                        break;
+                    case 3: // left
+                        posX = 0;
+                        posY = Math.random() * 100;
+                        break;
+                }
+                
+                shootingStar.style.left = `${posX}%`;
+                shootingStar.style.top = `${posY}%`;
+                
+                // Random angle
+                const angle = Math.random() * 60 - 30;
+                shootingStar.style.setProperty('--angle', `${angle}deg`);
+                
+                // Random length between 50px and 150px
+                const length = Math.random() * 100 + 50;
+                shootingStar.style.setProperty('--length', `${length}px`);
+                
+                // Random travel distance
+                const travelX = Math.random() * 500 + 300;
+                const travelY = Math.random() * 500 + 300;
+                shootingStar.style.setProperty('--travel-x', `${travelX}px`);
+                shootingStar.style.setProperty('--travel-y', `${travelY}px`);
+                
+                // Random duration between 2s and 4s
+                const duration = Math.random() * 2 + 2;
+                shootingStar.style.setProperty('--duration', `${duration}s`);
+                
+                // Add to container
+                shootingStarsContainer.appendChild(shootingStar);
+                
+                // Remove after animation completes
+                setTimeout(() => {
+                    shootingStar.remove();
+                }, duration * 1000);
             }
+            
+            // Periodically create shooting stars
+            setInterval(createShootingStar, 1000);
+            
+            // Create initial batch of shooting stars
+            for (let i = 0; i < 5; i++) {
+                setTimeout(createShootingStar, Math.random() * 2000);
+            }
+            
+            // Create glowing orbs
+            const orbColors = ['rgba(255, 204, 0, 0.3)', 'rgba(100, 200, 255, 0.3)', 'rgba(255, 100, 255, 0.3)'];
+            
+            for (let i = 0; i < 5; i++) {
+                const orb = document.createElement('div');
+                orb.className = 'orb';
+                
+                // Random size between 100px and 300px
+                const size = Math.random() * 200 + 100;
+                orb.style.width = `${size}px`;
+                orb.style.height = `${size}px`;
+                
+                // Random position
+                orb.style.left = `${Math.random() * 100}%`;
+                orb.style.top = `${Math.random() * 100}%`;
+                
+                // Random color
+                const color = orbColors[Math.floor(Math.random() * orbColors.length)];
+                orb.style.setProperty('--color', color);
+                
+                // Random movement range
+                const moveX = (Math.random() * 100 - 50) + 'px';
+                const moveY = (Math.random() * 100 - 50) + 'px';
+                orb.style.setProperty('--move-x', moveX);
+                orb.style.setProperty('--move-y', moveY);
+                
+                // Random animation duration between 15s and 30s
+                const duration = Math.random() * 15 + 15;
+                orb.style.setProperty('--duration', `${duration}s`);
+                
+                // Random animation delay
+                orb.style.animationDelay = `${Math.random() * 5}s`;
+                
+                orbsContainer.appendChild(orb);
+            }
+            
+            // Create magic circles
+            for (let i = 0; i < 3; i++) {
+                const magicCircle = document.createElement('div');
+                magicCircle.className = 'magic-circle';
+                
+                // Random size between 300px and 500px
+                const size = Math.random() * 200 + 300;
+                magicCircle.style.width = `${size}px`;
+                magicCircle.style.height = `${size}px`;
+                
+                // Random position (centered more in the middle)
+                magicCircle.style.left = `${Math.random() * 50 + 25}%`;
+                magicCircle.style.top = `${Math.random() * 50 + 25}%`;
+                
+                // Random animation duration between 30s and 60s
+                const duration = Math.random() * 30 + 30;
+                magicCircle.style.setProperty('--duration', `${duration}s`);
+                
+                // Add runes to magic circle
+                const runeCount = Math.floor(Math.random() * 5) + 5;
+                for (let j = 0; j < runeCount; j++) {
+                    const rune = document.createElement('div');
+                    rune.className = 'rune';
+                    
+                    // Position along the circle
+                    const angle = (j / runeCount) * 360;
+                    const radius = size / 2;
+                    const runeX = Math.cos(angle * Math.PI / 180) * radius + radius - 5;
+                    const runeY = Math.sin(angle * Math.PI / 180) * radius + radius - 5;
+                    
+                    rune.style.left = `${runeX}px`;
+                    rune.style.top = `${runeY}px`;
+                    
+                    magicCircle.appendChild(rune);
+                }
+                
+                magicCirclesContainer.appendChild(magicCircle);
+            }
+            
+            // Parallax effect
+            document.addEventListener('mousemove', function(e) {
+                const mouseX = e.clientX / window.innerWidth;
+                const mouseY = e.clientY / window.innerHeight;
+                
+                parallaxLayers.forEach(layer => {
+                    const depth = layer.getAttribute('data-depth');
+                    const moveX = (mouseX - 0.5) * depth * 50;
+                    const moveY = (mouseY - 0.5) * depth * 50;
+                    layer.style.transform = `translate3d(${moveX}px, ${moveY}px, 0)`;
+                });
+            });
             
             // IP Copy functionality
             const ipBox = document.getElementById('ip-box');
@@ -925,143 +702,6 @@
                     }, 2000);
                 });
             });
-            
-            // Shop category filtering
-            const categoryButtons = document.querySelectorAll('.category-btn');
-            const shopItems = document.querySelectorAll('.shop-item');
-            
-            categoryButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    // Remove active class from all buttons
-                    categoryButtons.forEach(btn => btn.classList.remove('active'));
-                    
-                    // Add active class to clicked button
-                    button.classList.add('active');
-                    
-                    const category = button.getAttribute('data-category');
-                    
-                    // Show or hide shop items based on category
-                    shopItems.forEach(item => {
-                        if (category === 'all' || item.getAttribute('data-category') === category) {
-                            item.style.display = 'block';
-                            // Add animation for appearing items
-                            item.style.animation = 'fadeInUp 0.5s ease forwards';
-                        } else {
-                            item.style.display = 'none';
-                        }
-                    });
-                });
-            });
-            
-            // Smooth scrolling for navigation
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    
-                    const target = document.querySelector(this.getAttribute('href'));
-                    if (target) {
-                        window.scrollTo({
-                            top: target.offsetTop - 80,
-                            behavior: 'smooth'
-                        });
-                    }
-                });
-            });
-            
-            // Animation on scroll
-            const animateOnScroll = () => {
-                const elements = document.querySelectorAll('.shop-item, .feature-card, .section-title');
-                
-                elements.forEach(element => {
-                    const elementPosition = element.getBoundingClientRect().top;
-                    const screenPosition = window.innerHeight / 1.2;
-                    
-                    if (elementPosition < screenPosition) {
-                        element.style.opacity = '1';
-                        element.style.transform = 'translateY(0)';
-                    }
-                });
-            };
-            
-            // Set initial state for animation
-            document.querySelectorAll('.shop-item, .feature-card').forEach(el => {
-                el.style.opacity = '0';
-                el.style.transform = 'translateY(30px)';
-                el.style.transition = 'all 0.5s ease';
-            });
-            
-            // Run animation on scroll
-            window.addEventListener('scroll', animateOnScroll);
-            animateOnScroll(); // Run once on load
-            
-            // Add parallax effect to background
-            window.addEventListener('mousemove', function(e) {
-                const x = e.clientX / window.innerWidth;
-                const y = e.clientY / window.innerHeight;
-                
-                spaceBackground.style.transform = `translate(${x * -20}px, ${y * -20}px)`;
-            });
-            
-            // Add glow effect to shop items on hover
-            shopItems.forEach(item => {
-                item.addEventListener('mouseenter', function() {
-                    this.style.boxShadow = '0 15px 30px rgba(0, 0, 0, 0.3), 0 0 15px rgba(255, 204, 0, 0.5)';
-                });
-                
-                item.addEventListener('mouseleave', function() {
-                    this.style.boxShadow = '0 15px 30px rgba(0, 0, 0, 0.3)';
-                });
-            });
-            
-            // Notification system
-            setTimeout(function() {
-                const notification = document.createElement('div');
-                notification.style.position = 'fixed';
-                notification.style.bottom = '20px';
-                notification.style.right = '20px';
-                notification.style.backgroundColor = 'rgba(255, 204, 0, 0.9)';
-                notification.style.color = '#121212';
-                notification.style.padding = '1rem';
-                notification.style.borderRadius = '8px';
-                notification.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.3)';
-                notification.style.zIndex = '1000';
-                notification.style.transform = 'translateX(200%)';
-                notification.style.transition = 'transform 0.5s ease';
-                notification.innerHTML = `
-                    <div style="display: flex; align-items: center;">
-                        <div style="margin-right: 10px;">
-                            <i class="fas fa-gift" style="font-size: 1.5rem;"></i>
-                        </div>
-                        <div>
-                            <div style="font-weight: 700;">Special Offer!</div>
-                            <div style="font-size: 0.9rem;">50% OFF on all ranks this weekend!</div>
-                        </div>
-                        <div style="margin-left: 15px; cursor: pointer;" id="close-notification">
-                            <i class="fas fa-times"></i>
-                        </div>
-                    </div>
-                `;
-                
-                document.body.appendChild(notification);
-                
-                setTimeout(function() {
-                    notification.style.transform = 'translateX(0)';
-                }, 500);
-                
-                document.getElementById('close-notification').addEventListener('click', function() {
-                    notification.style.transform = 'translateX(200%)';
-                    setTimeout(function() {
-                        notification.remove();
-                    }, 500);
-                });
-                
-                setTimeout(function() {
-                    notification.style.transform = 'translateX(200%)';
-                    setTimeout(function() {
-                        notification.remove();
-                    }, 500);
-                }, 10000);
-            }, 5000);
         });
     </script>
 </body>
